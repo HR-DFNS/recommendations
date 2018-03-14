@@ -41,3 +41,7 @@ To start, in your browser navigate to: [http://localhost:3004](http://localhost:
 
 ## Tests
 Run: `npm test`
+
+## Credits
+This repository was originally created by Stacy Lin (stayclin).
+https://github.com/bamboo-connection/recommendations
