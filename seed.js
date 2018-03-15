@@ -6,6 +6,8 @@ var Restaurants = require('./db/models/restaurant.js');
 var api_key = require('./config.js');
 const request = require ('request-promise');
 const dbAddress = process.env.DB_ADDRESS || 'localhost';
+const faker = require ('faker');
+
 
 var uri = `mongodb://${dbAddress}/wegot`;
 mongoose.connect(uri, { useMongoClient: true });
@@ -41,7 +43,7 @@ async function getRestaurants(restData) {
   var photosURLArray = [];
   var googlePhotoURL = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400';
 
-  for(var i = 0; i < restData.length; i++){
+  for(var i = 0; i < 10; i++){
     var photoRes;
     var rest = restData[i];
     var result = restData[i].result;
@@ -108,20 +110,20 @@ async function getRestaurants(restData) {
 
     //generate restaurant models for each restaurant
     var restaurant = {
-      name: result.name,
-      place_id: result.place_id,
-      google_rating: result.rating,
-      zagat_food_rating: result.zagat_food,
-      review_count: result.reviews.length,
-      photos: photosURLArray,
-      short_description: result.short_description,
-      neighborhood: result.address_components[2]["long_name"],
-      location: { lat: result.geometry.location.lat, long: result.geometry.location.lng },
-      address: result.formatted_address, 
-      website: result.website,
-      price_level: result.price_level,
-      types: typesArray,
-      nearby: distArr
+      name: faker.random.words(),
+      place_id: i,
+      google_rating: faker.finance.amount(0,5,1),
+      zagat_food_rating: faker.finance.amount(0,5,1),
+      review_count: faker.random.number(50),
+      photos: getFakePhotoUrlsArray(10),
+      short_description: faker.lorem.sentence(),
+      neighborhood: faker.address.county(),
+      location: { lat: faker.address.latitude(), long: faker.address.longitude() },
+      address: faker.fake("{{address.streetAddress}}, {{address.city}}, {{address.stateAbbr}} {{address.zipCode}}, {{address.countryCode}}"),
+      website: faker.internet.url(),
+      price_level: faker.random.number(3) + 1,
+      types: getFakeTypesArray(5),
+      nearby: getFakeNearbyArray(6)
     }
     // console.log(restaurant);
 
@@ -166,4 +168,55 @@ var distance = (r1, r2) => {
   dist = dist * 60 * 1.1515;
   return dist;
 };
+
+var getFakePhotoUrlsArray = function(num) {
+  var arr = [];
+
+  for (var i = 0; i < num; i++) {
+    var height = faker.random.number({min:210, max:190});
+    var url = `https://dummyimage.com/300x${height}`
+    arr.push(url);
+  }
+  
+  return arr;
+}
+
+var getFakeNearbyArray = function (num) {
+  var arr = [];
+  
+  for (var i = 0; i < num; i++) {
+    var nearby = faker.random.number(num);
+    if (!arr.includes(nearby)) {
+      arr.push(nearby);
+    }
+  }
+
+  return arr;
+}
+
+var getFakeTypesArray = function (num) {
+  var arr = [];
+
+  var types = [
+    "bar",
+    "clothing_store",
+    "establishment",
+    "food",
+    "liquor_store",
+    "lodging",
+    "night_club",
+    "point_of_interest",
+    "restaurant",
+    "store"
+  ];
+
+  for (var i = 0; i < num; i++) {
+    var type = faker.random.arrayElement(types);
+    if (!arr.includes(type)) {
+      arr.push(type);
+    }
+  }
+
+  return arr;
+}
 
