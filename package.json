@@ -11,7 +11,7 @@
     "server": "nodemon ./server/index.js",
     "react-dev": "webpack -d --watch",
     "database": "mongod",
-    "seed-database": "node create_fake_seed_data.js && node seed_fake_database.js",
+    "seed-database": "node create_fake_seed_data.js && mongoimport --db wegot --collection restaurants --drop --file fake_seed_data.json --jsonArray",
     "test": "jest",
     "start": "node ./server/index.js",
     "dockertest": "npm run seed-database && npm start",
