@@ -59,7 +59,7 @@ var getFakeTypesArray = function (num) {
 }
 
 var start = 0;
-var end = 100;
+var end = 1000000;
 
 for (var i = start; i <= end; i++) {
   var restaurant = {
