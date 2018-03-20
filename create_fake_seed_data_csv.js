@@ -1,6 +1,7 @@
 var fs = require('fs');
 var faker = require('faker');
-var file = fs.createWriteStream('./fake_seed_data2.json');
+var file = fs.createWriteStream('./recommendations.csv');
+
 var startTime = process.hrtime();
 
 var getFakeAddressString = function() {
@@ -60,43 +61,36 @@ var getFakeTypesArray = function (num) {
 
 var start = 0;
 var end = 10;
-
-for (var i = start; i <= end; i++) {
-  var restaurant = JSON.stringify({
-    name: faker.company.companyName(), // string
-    place_id: i, // number, primary key
-    google_rating: faker.finance.amount(0,5,1), // number
-    zagat_food_rating: faker.finance.amount(0,5,1), // number
-    review_count: faker.random.number(50),// number
+for(var i=start; i<= end; i++) {
+  var restaurant = {
+    name: faker.company.companyName(),
+    place_id: i,
+    google_rating: faker.finance.amount(0,5,1),
+    zagat_food_rating: faker.finance.amount(0,5,1),
+    review_count: faker.random.number(50),
     photos: getFakePhotoUrlsArray(10),
-    short_description: faker.lorem.sentence(), // string
-    neighborhood: faker.address.county(), // string
-    location: { lat: faker.address.latitude(), long: faker.address.longitude() }, // split into two numbers
-    address: getFakeAddressString(), // string
-    website: faker.internet.url(), // string
-    price_level: faker.random.number({min:1, max:4}), // number
-    types: getFakeTypesArray(5), // table with primary ids
-    nearby: getFakeNearbyArray(20) 
-  });
-
-  if (i === start) {
-    file.write('[\n' + restaurant + ',\n');
-  } else if (i === end) {
-    file.write(restaurant + '\n]');
-  } else {
-    file.write(restaurant + ',\n');
-  }
-
-  if (i % (end/10) === 0) {
-    console.log(i/end*100 + '% Complete.');
-  }
+    short_description: faker.lorem.sentence(),
+    neighborhood: faker.address.county(),
+    location: [ faker.address.latitude(), faker.address.longitude() ],
+    address: getFakeAddressString(),
+    website: faker.internet.url(),
+    price_level: faker.random.number({min:1, max:4}),
+    types: getFakeTypesArray(5),
+    nearby: getFakeNearbyArray(20)
+  };
+  
+  file.write(restaurant.name + '^' + restaurant.place_id + '^' + restaurant.google_rating + '^' + restaurant.zagat_food_rating + '^' + restaurant.review_count + '^' + restaurant.photos + '^' + restaurant.short_description + '^' + restaurant.neighborhood + '^' + restaurant.location + '^' + restaurant.address + '^' + restaurant.website + '^' + restaurant.price_level + '^' + restaurant.types + '^' + restaurant.nearby + '^\n');
+  // var keys = Object.keys(restaurant);
+  // for (var j = 0; j < keys.length; j++) {
+  //   file.write(restaurant[keys[j]] + '^');
+  // }
+  // file.write('\n');
 }
 
 file.end();
 
 var elapsedSeconds = parseHrtimeToSeconds(process.hrtime(startTime));
 console.log('Creating seed data took ' + elapsedSeconds + ' seconds');
-
 function parseHrtimeToSeconds(hrtime) {
   var seconds = (hrtime[0] + (hrtime[1] / 1e9)).toFixed(3);
   return seconds;
