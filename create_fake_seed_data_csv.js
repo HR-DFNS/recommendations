@@ -1,6 +1,6 @@
 var fs = require('fs');
 var faker = require('faker');
-var file = fs.createWriteStream('./recommendations.csv');
+var file = fs.createWriteStream('./create_fake_seed_data.csv');
 
 var startTime = process.hrtime();
 

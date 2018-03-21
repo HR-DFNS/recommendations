@@ -27,10 +27,13 @@
     "faker": "^4.1.0",
     "jquery": "^3.1.1",
     "mongoose": "^4.6.4",
+    "mysql": "^2.15.0",
+    "mysql2": "^1.5.3",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "sequelize": "^4.37.3"
   },
   "devDependencies": {
     "babel-jest": "^22.4.1",
