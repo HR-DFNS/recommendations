@@ -1,4 +1,4 @@
--- CREATE DATABASE wegot;
+CREATE DATABASE IF NOT EXISTS wegot;
 
 USE wegot;
 
@@ -19,3 +19,7 @@ CREATE TABLE IF NOT EXISTS recommendations (
   `nearby` VARCHAR(100),
   PRIMARY KEY (`place_id`)
 );
+
+-- LOAD DATA LOCAL INFILE "create_fake_seed_data.csv" INTO TABLE recommendations COLUMNS TERMINATED BY '^' LINES TERMINATED BY '\n';
+
+-- mysql -u root --local-infile wegot
