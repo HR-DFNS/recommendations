@@ -14,19 +14,17 @@ var sequelize = new Sequelize('wegot', 'root', '', {
 
 var RestaurantModel = sequelize.define('Restaurant', {
   name: Sequelize.STRING,
-  description: Sequelize.STRING,
-  deadline: Sequelize.STRING,
-  place_id: Sequelize.STRING,
-  google_rating: Sequelize.STRING,
-  zagat_food_rating: Sequelize.STRING,
-  review_count: Sequelize.STRING,
+  place_id: Sequelize.INTEGER,
+  google_rating: Sequelize.DECIMAL(2, 1),
+  zagat_food_rating: Sequelize.DECIMAL(2, 1),
+  review_count: Sequelize.INTEGER,
   photos: Sequelize.STRING,
   short_description: Sequelize.STRING,
   neighborhood: Sequelize.STRING,
   location: Sequelize.STRING,
   address: Sequelize.STRING,
   website: Sequelize.STRING,
-  price_level: Sequelize.STRING,
+  price_level: Sequelize.TINYINT,
   types: Sequelize.STRING,
   nearby: Sequelize.STRING
 })
@@ -69,6 +67,7 @@ app.get('/api/restaurants/:id/recommendations', function (req, res) {
               data[i].photos = (data[i].photos).split(',');
             }
             results.push(data);
+            console.log("sql");
             res.send(results);
           })
       })
@@ -95,7 +94,7 @@ app.get('/api/restaurants/:id/recommendations', function (req, res) {
             res.status(200);
             // res.send(data);
             // console.log(results.length);
-            console.log("sql");
+            console.log("mongo");
             res.send(results);
           }
         });

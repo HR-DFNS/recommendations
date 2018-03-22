@@ -3,20 +3,20 @@ CREATE DATABASE IF NOT EXISTS wegot;
 USE wegot;
 
 CREATE TABLE IF NOT EXISTS recommendations (
-  `name` VARCHAR(100),
+  `name` VARCHAR(50),
   `place_id` INT,
   `google_rating` numeric(2,1),
   `zagat_food_rating` numeric(2,1),
   `review_count` INT,
-  `photos` VARCHAR(350),
-  `short_description` VARCHAR(100),
-  `neighborhood` VARCHAR(100),
-  `location` VARCHAR(100),
-  `address` VARCHAR(100),
-  `website` VARCHAR(100),
+  `photos` VARCHAR(320),
+  `short_description` VARCHAR(110),
+  `neighborhood` VARCHAR(20),
+  `location` VARCHAR(25),
+  `address` VARCHAR(75),
+  `website` VARCHAR(30),
   `price_level` TINYINT,
-  `types` VARCHAR(100),
-  `nearby` VARCHAR(100),
+  `types` VARCHAR(75),
+  `nearby` VARCHAR(55),
   PRIMARY KEY (`place_id`)
 );
 
