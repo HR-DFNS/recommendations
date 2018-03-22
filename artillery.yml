@@ -1,0 +1,12 @@
+config:
+  target: 'http://localhost:3004/restaurants'
+
+  phases:
+    - duration: 10
+      arrivalRate: 60
+scenarios:  
+  - flow:
+    - loop:
+      - get:
+          url: "/{{$randomNumber(1,10000000)}}/"
+      count: 200
