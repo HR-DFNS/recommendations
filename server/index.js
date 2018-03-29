@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 
-var isSQL = true;
+var isSQL = false;
 
 var Sequelize = require('sequelize');
 
@@ -72,36 +72,25 @@ app.get('/api/restaurants/:id/recommendations', function (req, res) {
           })
       })
   } else {
-    restaurants.findOne(placeId, (err, data)=> {
-      if(err){
-        res.status(500);
-        console.log(err);
-      } else{
-        //console.log("restaurant info:",data);
-        var nearbyArr = data[0].nearby;
-        // console.log(nearbyArr);
-        results.push(data[0]);
-        console.log(JSON.stringify(data[0].photos));
-  
-        restaurants.findMany(nearbyArr, (err, data)=> {
-          if(err){
-            res.status(500);
-            console.log(err);
-          } else{
-            //console.log("recommended restaurants:", data);
-            results.push(data)
-            // console.log("number of recommended: " + data.length);
-            res.status(200);
-            // res.send(data);
-            // console.log(results.length);
-            console.log("mongo");
-            res.send(results);
-          }
-        });
-      }
+    restaurants
+    .findOne(placeId)
+    .then((currentRestaurant) => {
+      var nearbyRestaurants = currentRestaurant[0].nearby;
+      results.push(currentRestaurant);
+      return restaurants
+      .findMany(nearbyRestaurants)
+    })
+    .then((nearby) => {
+      results.push(nearby);
+      res.status(200);
+      res.send(results);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500);
+      res.end();
     });
   }
 });
-
 
 app.listen(3004, function () { console.log('WeGot app listening on port 3004!') });
