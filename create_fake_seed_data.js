@@ -1,6 +1,6 @@
 var fs = require('fs');
 var faker = require('faker');
-var file = fs.createWriteStream('./fake_seed_data2.json');
+var file = fs.createWriteStream('./fake_seed_data.json');
 var startTime = process.hrtime();
 
 var getFakeAddressString = function() {
@@ -59,7 +59,7 @@ var getFakeTypesArray = function (num) {
 }
 
 var start = 0;
-var end = 10;
+var end = 100000;
 
 for (var i = start; i <= end; i++) {
   var restaurant = JSON.stringify({
