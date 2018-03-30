@@ -4,6 +4,14 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 
+// Promisify Redis
+const Promise = require("bluebird");
+const redis = require("redis");
+Promise.promisifyAll(redis.RedisClient.prototype);
+Promise.promisifyAll(redis.Multi.prototype);
+
+const client = redis.createClient();
+
 var isSQL = false;
 
 var Sequelize = require('sequelize');
@@ -42,6 +50,25 @@ app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, '../client/dist')));
 app.use('/restaurants/:id', express.static(path.join(__dirname, '../client/dist')));
 
+app.get('/api/restaurants/:id/recommendations', function(req, res, next) {
+  var placeId = req.params.id || 0;
+  client
+    .getAsync(placeId)
+    .then(data => {
+      if (data) {
+        res.status(200);
+        // console.log('redis was here: data exists');
+        res.send(JSON.parse(data));
+      } else {
+        // console.log('redis was here: no data - next');
+        next();
+      }
+    })
+    .catch(err => {
+      throw err;
+    });
+});
+
 app.get('/api/restaurants/:id/recommendations', function (req, res) {
   var placeId = req.params.id || 0;
   console.log("GET " + req.url);
@@ -51,7 +78,6 @@ app.get('/api/restaurants/:id/recommendations', function (req, res) {
     sequelize
       .query('SELECT * FROM recommendations WHERE place_id = ' + placeId, { model: RestaurantModel })
       .then(data => {
-        // Each record will now be mapped to the project's model.
         // console.log(data[0])
         var nearbyArr = data[0].nearby;        
         data[0].photos = (data[0].photos).split(',');
@@ -61,13 +87,11 @@ app.get('/api/restaurants/:id/recommendations', function (req, res) {
         sequelize
           .query('SELECT * FROM recommendations WHERE place_id IN (' + nearbyArr + ')', { model: RestaurantModel })
           .then(data => {
-            // Each record will now be mapped to the project's model.
-
             for (var i = 0; i < data.length; i++) {
               data[i].photos = (data[i].photos).split(',');
             }
             results.push(data);
-            console.log("sql");
+            // console.log("sql");
             res.send(results);
           })
       })
@@ -82,6 +106,8 @@ app.get('/api/restaurants/:id/recommendations', function (req, res) {
     })
     .then((nearby) => {
       results.push(nearby);
+      //console.log('nothing found in redis, hit the db');
+      client.set(placeId, JSON.stringify(results));
       res.status(200);
       res.send(results);
     })
