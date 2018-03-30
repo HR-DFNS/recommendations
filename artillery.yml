@@ -8,5 +8,5 @@ scenarios:
   - flow:
     - loop:
       - get:
-          url: "/{{$randomNumber(1,10000000)}}/recommendations"
+          url: "/{{$randomNumber(1,10)}}/recommendations"
       count: 200
